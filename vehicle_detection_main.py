@@ -41,7 +41,7 @@ with open('traffic_measurement.csv', 'w') as f:
     writer.writerows([csv_line.split(',')])
 
 # input video
-source_video = 'input_video.mp4'
+source_video = 'traffic3.mp4'
 cap = cv2.VideoCapture(source_video)
 
 
@@ -72,10 +72,10 @@ NUM_CLASSES = 90
 # Load a (frozen) Tensorflow model into memory.
 detection_graph = tf.Graph()
 with detection_graph.as_default():
-    od_graph_def = tf.GraphDef()
-    with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
-    #od_graph_def = tf.compat.v1.GraphDef() # use this line to run it with TensorFlow version 2.x
-    #with tf.compat.v2.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid: # use this line to run it with TensorFlow version 2.x
+    #od_graph_def = tf.GraphDef()
+    #with tf.gfile.GFile(PATH_TO_CKPT, 'rb') as fid:
+    od_graph_def = tf.compat.v1.GraphDef() # use this line to run it with TensorFlow version 2.x
+    with tf.compat.v2.io.gfile.GFile(PATH_TO_CKPT, 'rb') as fid: # use this line to run it with TensorFlow version 2.x
         serialized_graph = fid.read()
         od_graph_def.ParseFromString(serialized_graph)
         tf.import_graph_def(od_graph_def, name='')
@@ -108,8 +108,8 @@ def object_detection_function(command):
         output_movie = cv2.VideoWriter(source_video.split(".")[0]+'_output.avi', fourcc, fps, (width, height))
 
     with detection_graph.as_default():
-        with tf.Session(graph=detection_graph) as sess:
-        #with tf.compat.v1.Session(graph=detection_graph) as sess: # use this line to run it with TensorFlow version 2.x
+        #with tf.Session(graph=detection_graph) as sess:
+        with tf.compat.v1.Session(graph=detection_graph) as sess: # use this line to run it with TensorFlow version 2.x
 
             # Definite input and output Tensors for detection_graph
             image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
@@ -172,9 +172,9 @@ def object_detection_function(command):
 
                 # when the vehicle passed over line and counted, make the color of ROI line green
                 if counter == 1:
-                    cv2.line(input_frame, (0, 200), (640, 200), (0, 0xFF, 0), 5)
+                    cv2.line(input_frame, (0, 250), (1040, 250), (0, 0xFF, 0), 5)
                 else:
-                    cv2.line(input_frame, (0, 200), (640, 200), (0, 0, 0xFF), 5)
+                    cv2.line(input_frame, (0, 250), (1040, 250), (0, 0, 0xFF), 5)
 
                 # insert information text to video frame
                 cv2.rectangle(input_frame, (10, 275), (230, 337), (180, 132, 109), -1)
